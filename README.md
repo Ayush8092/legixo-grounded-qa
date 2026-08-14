@@ -42,7 +42,7 @@ design and [`docs/langgraph.md`](docs/langgraph.md) for the graph itself.
 ## Setup
 
 ```bash
-git clone <this-repo-url>
+git clonehttps://github.com/Ayush8092/legixo-grounded-qa
 cd legixo-grounded-qa
 
 python3 -m venv .venv
