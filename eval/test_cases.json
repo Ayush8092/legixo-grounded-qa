@@ -1,0 +1,264 @@
+[
+  {
+    "id": "eval-01",
+    "question": "What is the notice period at Bluecrest Analytics?",
+    "category": "answerable_direct",
+    "answerable": true,
+    "expected_keywords": [
+      "60 days"
+    ],
+    "notes": "Direct fact lookup with an exact figure.",
+    "allowed_source_files": [
+      "02_employment_agreement_excerpt.md"
+    ],
+    "required_source_files": [
+      "02_employment_agreement_excerpt.md"
+    ]
+  },
+  {
+    "id": "eval-02",
+    "question": "How long is the non-compete period after leaving Bluecrest, and what triggers it?",
+    "category": "answerable_semantic",
+    "answerable": true,
+    "expected_keywords": [
+      "12 months",
+      "competitor"
+    ],
+    "notes": "Requires paraphrasing the clause rather than quoting a single sentence verbatim.",
+    "allowed_source_files": [
+      "02_employment_agreement_excerpt.md"
+    ],
+    "required_source_files": [
+      "02_employment_agreement_excerpt.md"
+    ]
+  },
+  {
+    "id": "eval-03",
+    "question": "What is the monthly rent for Unit 4B at Harbor View Tower?",
+    "category": "answerable_numeric",
+    "answerable": true,
+    "expected_keywords": [
+      "45,000"
+    ],
+    "notes": "Numeric figure with a currency symbol.",
+    "allowed_source_files": [
+      "06_property_lease_clause.md"
+    ],
+    "required_source_files": [
+      "06_property_lease_clause.md"
+    ]
+  },
+  {
+    "id": "eval-04",
+    "question": "How much is the security deposit on the Harbor View lease, and how many months' rent does that represent?",
+    "category": "answerable_numeric",
+    "answerable": true,
+    "expected_keywords": [
+      "1,35,000",
+      "three months"
+    ],
+    "notes": "Two related numbers in the same section.",
+    "allowed_source_files": [
+      "06_property_lease_clause.md"
+    ],
+    "required_source_files": [
+      "06_property_lease_clause.md"
+    ]
+  },
+  {
+    "id": "eval-05",
+    "question": "Is subletting allowed under the Harbor View lease?",
+    "category": "answerable_direct",
+    "answerable": true,
+    "expected_keywords": [
+      "not allowed",
+      "written consent"
+    ],
+    "notes": "Yes/no clause lookup.",
+    "allowed_source_files": [
+      "06_property_lease_clause.md"
+    ],
+    "required_source_files": [
+      "06_property_lease_clause.md"
+    ]
+  },
+  {
+    "id": "eval-06",
+    "question": "What interest rate applies to delayed payments under the Riverside Commercial Courts Act when the contract fixes no rate?",
+    "category": "answerable_numeric",
+    "answerable": true,
+    "expected_keywords": [
+      "9%"
+    ],
+    "notes": "Numeric figure from the fictional statute excerpt.",
+    "allowed_source_files": [
+      "04_statute_style_excerpt_fictional.md"
+    ],
+    "required_source_files": [
+      "04_statute_style_excerpt_fictional.md"
+    ]
+  },
+  {
+    "id": "eval-07",
+    "question": "When does a commercial suit have to go to mandatory mediation under the Riverside Commercial Courts Act, and for how long?",
+    "category": "answerable_numeric",
+    "answerable": true,
+    "expected_keywords": [
+      "five lakh",
+      "30 days"
+    ],
+    "notes": "Two numeric conditions from Section 14.",
+    "allowed_source_files": [
+      "04_statute_style_excerpt_fictional.md"
+    ],
+    "required_source_files": [
+      "04_statute_style_excerpt_fictional.md"
+    ]
+  },
+  {
+    "id": "eval-08",
+    "question": "What did Northfield offer to settle the Arvind Mehta case, and what did the client instruct as a counter?",
+    "category": "answerable_numeric",
+    "answerable": true,
+    "expected_keywords": [
+      "70%",
+      "85%"
+    ],
+    "notes": "Two competing percentages in one document — tests precision, not just retrieval.",
+    "allowed_source_files": [
+      "05_counsel_notes_settlement.md"
+    ],
+    "required_source_files": [
+      "05_counsel_notes_settlement.md"
+    ]
+  },
+  {
+    "id": "eval-09",
+    "question": "When is the next hearing in Arvind Mehta v. Northfield Logistics, and what is scheduled to happen at it?",
+    "category": "multi_document",
+    "answerable": true,
+    "expected_keywords": [
+      "15 August 2025",
+      "witness"
+    ],
+    "notes": "Same matter is covered from two angles: the matter memo (next hearing date) and the hearing notice template (today's listing, 11:00 a.m., invoice set-off arguments).",
+    "allowed_source_files": [
+      "01_matter_memo_arvind_v_northfield.md",
+      "03_hearing_notice_template.md"
+    ]
+  },
+  {
+    "id": "eval-10",
+    "question": "How many days before a hearing must written arguments be filed?",
+    "category": "answerable_direct",
+    "answerable": true,
+    "expected_keywords": [
+      "seven clear days"
+    ],
+    "notes": "Standard-wording lookup.",
+    "allowed_source_files": [
+      "03_hearing_notice_template.md"
+    ],
+    "required_source_files": [
+      "03_hearing_notice_template.md"
+    ]
+  },
+  {
+    "id": "eval-11",
+    "question": "What counts as confidential information under the Bluecrest employment agreement?",
+    "category": "answerable_semantic",
+    "answerable": true,
+    "expected_keywords": [
+      "pricing sheets",
+      "roadmaps",
+      "customer names"
+    ],
+    "notes": "List-style clause; tests whether the answer covers all items, not just one.",
+    "allowed_source_files": [
+      "02_employment_agreement_excerpt.md"
+    ],
+    "required_source_files": [
+      "02_employment_agreement_excerpt.md"
+    ]
+  },
+  {
+    "id": "eval-12",
+    "question": "What is the limitation period for contract claims under the fictional Riverside Code mentioned in the Arvind Mehta memo?",
+    "category": "similar_terminology",
+    "answerable": true,
+    "expected_keywords": [
+      "three years"
+    ],
+    "notes": "The memo's 'Riverside Code' and the statute excerpt's 'Riverside Commercial Courts Act' are similarly named but distinct documents — tests that the system doesn't conflate them or pull the 9% interest figure from doc 04 instead.",
+    "allowed_source_files": [
+      "01_matter_memo_arvind_v_northfield.md"
+    ],
+    "required_source_files": [
+      "01_matter_memo_arvind_v_northfield.md"
+    ]
+  },
+  {
+    "id": "eval-13",
+    "question": "What is the population of Riverside city?",
+    "category": "unrelated",
+    "answerable": false,
+    "expected_keywords": [],
+    "notes": "Completely unrelated to the corpus; must be refused, not answered from general knowledge (matches the assignment's own manual-test example).",
+    "allowed_source_files": []
+  },
+  {
+    "id": "eval-14",
+    "question": "Who is the president of India?",
+    "category": "out_of_corpus",
+    "answerable": false,
+    "expected_keywords": [],
+    "notes": "Unrelated current-events question; tests refusal even for a question with a definite, well-known real-world answer the model 'knows' but must not use (matches the assignment's own manual-test example).",
+    "allowed_source_files": []
+  },
+  {
+    "id": "eval-15",
+    "question": "What color is the carpet in the Harbor View Tower office?",
+    "category": "out_of_corpus",
+    "answerable": false,
+    "expected_keywords": [],
+    "notes": "A related document (the lease) exists, but this specific detail is never stated — tests that retrieval of a related document doesn't lead to a fabricated answer.",
+    "allowed_source_files": []
+  },
+  {
+    "id": "eval-16",
+    "question": "What penalty applies if Priya breaches the non-compete clause at Bluecrest?",
+    "category": "partial_information",
+    "answerable": true,
+    "expected_keywords": [
+      "12 months"
+    ],
+    "notes": "The agreement states the non-compete's duration (12 months) but never states a penalty for breaching it. A correct answer states what IS in the documents and explicitly flags that the penalty is not specified, rather than inventing one. This is checked by keyword ('12 months' should still appear) plus manual review of results.md — the automated harness cannot verify 'did not invent a number' by keyword matching alone.",
+    "allowed_source_files": [
+      "02_employment_agreement_excerpt.md"
+    ],
+    "required_source_files": [
+      "02_employment_agreement_excerpt.md"
+    ],
+    "any_of_keywords": [
+      "not specif",
+      "does not state",
+      "no penalty",
+      "not stated",
+      "not mentioned",
+      "unspecified"
+    ],
+    "forbidden_keywords": [
+      "₹",
+      "rs.",
+      "rs ",
+      "inr ",
+      "fine of",
+      "monetary damages",
+      "liquidated damages",
+      "compensation of",
+      "penalty of",
+      "% of",
+      "terminat"
+    ]
+  }
+]

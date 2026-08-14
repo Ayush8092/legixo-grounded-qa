@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Legixo — Grounded Q&amp;A</title>
+  <meta name="description" content="Document-grounded Q&A over the Legixo corpus. Every answer is cited or refused." />
+
+  <!--
+    Inline, synchronous theme bootstrap — runs before the stylesheet paints
+    anything, so there is no flash of the wrong theme on load. Reads the
+    saved preference; falls back to the OS/browser preference; falls back
+    to dark (this app is dark-first).
+  -->
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("legixo-theme");
+        var theme = saved === "light" || saved === "dark"
+          ? saved
+          : (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+        document.documentElement.setAttribute("data-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="app-header-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">L</span>
+        <span class="brand-text">
+          <span class="brand-name">Legixo</span>
+          <span class="brand-sub">Grounded Q&amp;A</span>
+        </span>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to light theme">
+          <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.7"/>
+            <g stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+              <line x1="12" y1="2.3" x2="12" y2="4.6"/><line x1="12" y1="19.4" x2="12" y2="21.7"/>
+              <line x1="2.3" y1="12" x2="4.6" y2="12"/><line x1="19.4" y1="12" x2="21.7" y2="12"/>
+              <line x1="4.9" y1="4.9" x2="6.5" y2="6.5"/><line x1="17.5" y1="17.5" x2="19.1" y2="19.1"/>
+              <line x1="4.9" y1="19.1" x2="6.5" y2="17.5"/><line x1="17.5" y1="6.5" x2="19.1" y2="4.9"/>
+            </g>
+          </svg>
+          <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M20.4 14.7A8.7 8.7 0 1 1 9.3 3.6a7 7 0 0 0 11.1 11.1Z"/>
+          </svg>
+          <span class="theme-toggle-label">Theme</span>
+        </button>
+
+        <a
+          class="github-link"
+          id="github-link"
+          href="https://github.com/Ayush8092/legixo-grounded-qa"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg class="icon" viewBox="0 0 16 16" aria-hidden="true">
+            <path fill="currentColor" d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38l-.01-1.49c-2.23.48-2.7-1.07-2.7-1.07-.36-.93-.89-1.17-.89-1.17-.72-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.71 1.23 1.87.87 2.33.67.07-.52.28-.87.5-1.08-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.83-2.14-.08-.2-.36-1.02.08-2.13 0 0 .67-.22 2.2.83a7.6 7.6 0 0 1 4 0c1.53-1.05 2.2-.83 2.2-.83.44 1.11.16 1.93.08 2.13.52.55.82 1.27.82 2.14 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48l-.01 2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0Z"/>
+          </svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="docket">
+
+    <section class="docket-intro">
+      <p class="case-no">GROUNDED RETRIEVAL SYSTEM</p>
+      <p class="tagline">
+        Ask a question about the corpus below. Every answer is either grounded in a
+        cited document, or explicitly refused — never guessed.
+      </p>
+    </section>
+
+    <section class="ask-panel" aria-label="Ask a question">
+      <form id="ask-form">
+        <label class="field-label" for="question">Your question</label>
+        <div class="ask-box">
+          <textarea
+            id="question"
+            name="question"
+            rows="2"
+            maxlength="2000"
+            placeholder="e.g. What is the notice period at Bluecrest Analytics?"
+            required
+          ></textarea>
+          <button type="submit" id="ask-button">
+            <span class="btn-label">Ask</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+        </div>
+        <p class="hint">Enter to ask · Shift+Enter for a new line</p>
+      </form>
+
+      <div class="chips" id="example-chips" aria-label="Example questions">
+        <button type="button" class="chip" data-q="What is the notice period at Bluecrest Analytics?">Notice period at Bluecrest</button>
+        <button type="button" class="chip" data-q="How long is the non-compete restriction at Bluecrest?">Non‑compete length</button>
+        <button type="button" class="chip" data-q="When is the next hearing in Arvind Mehta v. Northfield Logistics?">Next hearing date</button>
+        <button type="button" class="chip" data-q="Can the tenant sublet the Harbor View unit?">Sublet the Harbor View unit?</button>
+        <button type="button" class="chip" data-q="What is the monthly rent for the Harbor View unit?">Harbor View rent</button>
+        <button type="button" class="chip" data-q="What is the population of Riverside city?">Try an unanswerable one →</button>
+      </div>
+    </section>
+
+    <section class="upload-panel" aria-label="Add documents">
+      <div class="upload-panel-head">
+        <h2 class="field-label">Add documents</h2>
+        <p class="upload-hint">Upload files to add them to the corpus. MD · TXT · PDF · DOCX</p>
+      </div>
+
+      <label class="dropzone" id="dropzone" for="upload-input">
+        <svg class="icon dropzone-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+            d="M12 3.5v11M8 8l4-4 4 4M4.5 15.5v2.75A1.75 1.75 0 0 0 6.25 20h11.5A1.75 1.75 0 0 0 19.5 18.25V15.5" />
+        </svg>
+        <span class="dropzone-text">
+          <strong>📄 Upload documents</strong>
+          <span class="dropzone-sub">Drag &amp; drop, or <span class="dropzone-browse">choose files</span></span>
+        </span>
+        <span class="dropzone-formats">MD · TXT · PDF · DOCX</span>
+        <input type="file" id="upload-input" name="files" multiple accept=".md,.txt,.pdf,.docx" hidden />
+      </label>
+
+      <ul class="upload-file-list" id="upload-file-list" hidden></ul>
+
+      <div class="upload-actions">
+        <button type="button" class="action-btn" id="upload-button" disabled>
+          <span class="btn-label">Upload &amp; Index</span>
+          <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <div class="upload-status" id="upload-status" aria-live="polite" hidden></div>
+    </section>
+
+    <p class="error-banner" id="error-banner" role="alert" hidden></p>
+
+    <!-- Loading / thinking state: mirrors the real retrieve -> grade -> generate -> validate pipeline. -->
+    <section class="pipeline-card" id="pipeline-card" hidden aria-live="polite" aria-label="Answer in progress">
+      <p class="pipeline-title">Retrieving evidence…</p>
+      <ol class="pipeline-steps" id="pipeline-steps">
+        <li class="pipeline-step" data-step="retrieve">
+          <span class="step-dot" aria-hidden="true"></span>
+          <span class="step-label">Searching corpus</span>
+        </li>
+        <li class="pipeline-step" data-step="grade">
+          <span class="step-dot" aria-hidden="true"></span>
+          <span class="step-label">Evaluating retrieved evidence</span>
+        </li>
+        <li class="pipeline-step" data-step="generate">
+          <span class="step-dot" aria-hidden="true"></span>
+          <span class="step-label">Generating grounded answer</span>
+        </li>
+        <li class="pipeline-step" data-step="validate">
+          <span class="step-dot" aria-hidden="true"></span>
+          <span class="step-label">Validating citations</span>
+        </li>
+      </ol>
+    </section>
+
+    <section class="answer-card" id="answer-card" hidden aria-live="polite">
+      <div class="answer-head">
+        <p class="answer-question" id="answer-question"></p>
+        <span class="stamp" id="stamp"></span>
+      </div>
+      <p class="answer-text" id="answer-text"></p>
+
+      <div class="answer-actions">
+        <button type="button" class="action-btn" id="copy-button" aria-label="Copy answer text">
+          <svg class="icon" viewBox="0 0 16 16" aria-hidden="true">
+            <rect x="5" y="5" width="9" height="9" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M3.3 10.7V3.3A1.3 1.3 0 0 1 4.6 2h7.4" fill="none" stroke="currentColor" stroke-width="1.4"/>
+          </svg>
+          <span id="copy-button-label">Copy answer</span>
+        </button>
+        <button type="button" class="action-btn action-btn-quiet" id="ask-another-button">
+          <span aria-hidden="true">+</span> New question
+        </button>
+      </div>
+
+      <h3 class="citations-heading" id="citations-heading" hidden>Sources</h3>
+      <div class="citations" id="citations" aria-label="Supporting evidence"></div>
+
+      <button type="button" class="scenes-toggle" id="scenes-toggle" aria-expanded="false">
+        <svg class="chevron" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Technical details
+      </button>
+
+      <div class="scenes-panel" id="scenes-panel" hidden>
+        <div class="trace-stages" id="trace-stages">
+          <section class="trace-stage" data-stage="retrieve">
+            <button type="button" class="trace-stage-header" id="trace-stage-header-retrieve" aria-expanded="false" aria-controls="trace-stage-body-retrieve">
+              <span class="trace-stage-check" aria-hidden="true">✓</span>
+              <span class="trace-stage-name">Retrieve — Pinecone</span>
+              <span class="trace-stage-chevron" aria-hidden="true">›</span>
+            </button>
+            <p class="trace-stage-desc">Candidate evidence retrieved</p>
+            <div class="trace-stage-body" id="trace-stage-body-retrieve" hidden>
+              <ol class="docket-log" id="docket-log-retrieve"></ol>
+              <div class="scenes-block" id="expansion-block" hidden>
+                <h4>Search queries</h4>
+                <p class="scenes-sub">Original question, then diversified variants if the first search came back thin.</p>
+                <ul class="query-list" id="query-list"></ul>
+              </div>
+              <div class="scenes-block" id="retrieval-block" hidden>
+                <h4>Retrieval</h4>
+                <dl class="stat-list" id="retrieval-stats"></dl>
+              </div>
+            </div>
+          </section>
+
+          <section class="trace-stage" data-stage="rerank">
+            <button type="button" class="trace-stage-header" id="trace-stage-header-rerank" aria-expanded="false" aria-controls="trace-stage-body-rerank">
+              <span class="trace-stage-check" aria-hidden="true">✓</span>
+              <span class="trace-stage-name">Rerank — BM25</span>
+              <span class="trace-stage-chevron" aria-hidden="true">›</span>
+            </button>
+            <p class="trace-stage-desc">Additional relevance check applied</p>
+            <div class="trace-stage-body" id="trace-stage-body-rerank" hidden>
+              <ol class="docket-log" id="docket-log-rerank"></ol>
+            </div>
+          </section>
+
+          <section class="trace-stage" data-stage="grade">
+            <button type="button" class="trace-stage-header" id="trace-stage-header-grade" aria-expanded="false" aria-controls="trace-stage-body-grade">
+              <span class="trace-stage-check" aria-hidden="true">✓</span>
+              <span class="trace-stage-name">Evidence Grade</span>
+              <span class="trace-stage-chevron" aria-hidden="true">›</span>
+            </button>
+            <p class="trace-stage-desc">Supporting evidence identified</p>
+            <div class="trace-stage-body" id="trace-stage-body-grade" hidden>
+              <ol class="docket-log" id="docket-log-grade"></ol>
+            </div>
+          </section>
+
+          <section class="trace-stage" data-stage="generate">
+            <button type="button" class="trace-stage-header" id="trace-stage-header-generate" aria-expanded="false" aria-controls="trace-stage-body-generate">
+              <span class="trace-stage-check" aria-hidden="true">✓</span>
+              <span class="trace-stage-name">Generate — Grounded Answer</span>
+              <span class="trace-stage-chevron" aria-hidden="true">›</span>
+            </button>
+            <p class="trace-stage-desc">Answer generated from supporting evidence only</p>
+            <div class="trace-stage-body" id="trace-stage-body-generate" hidden>
+              <ol class="docket-log" id="docket-log-generate"></ol>
+            </div>
+          </section>
+
+          <section class="trace-stage" data-stage="validate">
+            <button type="button" class="trace-stage-header" id="trace-stage-header-validate" aria-expanded="false" aria-controls="trace-stage-body-validate">
+              <span class="trace-stage-check" aria-hidden="true">✓</span>
+              <span class="trace-stage-name">Validate — Citations</span>
+              <span class="trace-stage-chevron" aria-hidden="true">›</span>
+            </button>
+            <p class="trace-stage-desc">Citations verified against source chunks</p>
+            <div class="trace-stage-body" id="trace-stage-body-validate" hidden>
+              <ol class="docket-log" id="docket-log-validate"></ol>
+            </div>
+          </section>
+        </div>
+
+        <button type="button" class="raw-toggle" id="raw-toggle" aria-expanded="false">Show raw trace</button>
+        <pre class="raw-trace" id="raw-trace" hidden></pre>
+      </div>
+    </section>
+
+    <footer class="docket-footer">
+      <span id="status-dot" class="status-dot" title="Checking service status…"></span>
+      <span id="status-text">Checking service status…</span>
+      <span class="footer-sep">·</span>
+      <a href="/docs" target="_blank" rel="noopener noreferrer">API docs</a>
+    </footer>
+  </main>
+
+  <script src="/static/app.js?v=2"></script>
+</body>
+</html>

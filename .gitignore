@@ -1,0 +1,64 @@
+# ============================================================
+# Environment / secrets
+# ============================================================
+.env
+
+
+# ============================================================
+# Python
+# ============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+
+.venv/
+venv/
+env/
+
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+*.egg-info/
+dist/
+build/
+
+
+# ============================================================
+# IDE / Editor
+# ============================================================
+.vscode/
+.idea/
+
+*.swp
+*.swo
+
+
+# ============================================================
+# OS
+# ============================================================
+.DS_Store
+Thumbs.db
+
+
+# ============================================================
+# Logs
+# ============================================================
+*.log
+
+
+# ============================================================
+# Local generated files
+# ============================================================
+.env.local
+
+
+# ============================================================
+# Runtime uploads — mutable knowledge base written by POST /upload
+# (see app/config.py UPLOAD_DIR, app/main.py, docs/architecture.md
+# "Two knowledge bases, one logical corpus"). Never commit what a
+# reviewer/recruiter uploads at runtime; data/corpus/ (the immutable
+# six-document assignment corpus) is unaffected by this rule.
+# ============================================================
+data/uploads/*
+!data/uploads/.gitkeep
